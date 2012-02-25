@@ -18,8 +18,6 @@
  *
  */
 
-if( class_exists( 'Genesis_Admin_Boxes' ) && is_admin() ) {
-
 /**
  * Add the Theme Settings Page
  *
@@ -49,7 +47,6 @@ add_action( 'admin_menu', 'ntg_add_settings', 5 );
 /*
  * url to load local resources.
  */
-
 define( 'NTG_META_BOX_URL', trailingslashit( str_replace( WP_CONTENT_DIR, WP_CONTENT_URL, dirname(__FILE__) ) ) );
 
  
@@ -201,13 +198,12 @@ class NTG_Theme_Settings_Builder extends Genesis_Admin_Boxes {
     }
  
     /**
-     * Callback for Contact Information metabox
+     * Callback for metabox
      *
      * @since 1.0.0
      *
      * @see Child_Theme_Settings::metaboxes()
      */
-    // Show fields
 	function show() {
 
 		echo '<table class="form-table cmb_metabox">';
@@ -305,14 +301,15 @@ class NTG_Theme_Settings_Builder extends Genesis_Admin_Boxes {
 					break;
 				case 'taxonomy_select':
 					echo '<select name="', $this->get_field_name( $field['id'] ), '" id="', $this->get_field_id( $field['id'] ), '">';
+                                    
+                                                        echo '<option value=""  ' , $meta == $term->slug ? ' selected' : '',' >Select '. $field['taxonomy'] .'</option>';
+                                                        
 					$names= wp_get_object_terms( $post->ID, $field['taxonomy'] );
 					$terms = get_terms( $field['taxonomy'], 'hide_empty=0' );
 					foreach ( $terms as $term ) {
-						if (!is_wp_error( $names ) && !empty( $names ) && !strcmp( $term->slug, $names[0]->slug ) ) {
-							echo '<option value="' . $term->slug . '" selected>' . $term->name . '</option>';
-						} else {
-							echo '<option value="' . $term->slug . '  ' , $meta == $term->slug ? $meta : ' ' ,'  ">' . $term->name . '</option>';
-						}
+						
+							echo '<option value="' . $term->slug . '"  ' , $meta == $term->slug ? ' selected' : '' ,' >' . $term->name . '</option>';
+						
 					}
 					echo '</select>';
 					echo '<p class="cmb_metabox_description">', $field['desc'], '</p>';
@@ -389,7 +386,6 @@ class NTG_Theme_Settings_Builder extends Genesis_Admin_Boxes {
 /**
  * Adding scripts and styles
  */
-
 function ntg_scripts() {
   	
 		wp_register_script( 'cmb-scripts', NTG_META_BOX_URL.'jquery.cmbScripts.js', array( 'jquery','media-upload','thickbox' ) );
@@ -459,7 +455,7 @@ function ntg_styles_inline() {
 		table.cmb_metabox input, table.cmb_metabox textarea { font-size:11px; padding: 5px;}
 		table.cmb_metabox li { font-size:11px; }
 		table.cmb_metabox ul { padding-top:5px; }
-		table.cmb_metabox select { font-size:11px; padding: 5px 10px;}
+		table.cmb_metabox select { font-size:11px; padding: 0 10px; height: auto;}
 		table.cmb_metabox input:focus, table.cmb_metabox textarea:focus { background: #fffff8;}
 		.cmb_metabox_title { margin: 0 0 5px 0; padding: 5px 0 0 0; font: italic 24px/35px Georgia,"Times New Roman","Bitstream Charter",Times,serif;}
 		.cmb_radio_inline { padding: 4px 0 0 0;}
@@ -476,6 +472,4 @@ function ntg_styles_inline() {
 		table.cmb_metabox .cmb_upload_status .img_status .remove_file_button { text-indent: -9999px; background: url(<?php echo NTG_META_BOX_URL ?>images/ico-delete.png); width: 16px; height: 16px; position: absolute; top: -5px; left: -5px;}
 	</style>
 	<?php
-}
-
 }
